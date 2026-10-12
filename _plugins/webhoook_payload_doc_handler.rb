@@ -1,5 +1,6 @@
 require 'faraday'
 require 'base64'
+require 'cgi'
 require 'openssl'
 
 class WebhookPayloadDocHandler
@@ -15,7 +16,7 @@ class WebhookPayloadDocHandler
       return invalid_req_response
     end
 
-    payload = URI.decode(req.params["payload"])
+    payload = CGI.unescape(req.params["payload"])
     sig = Base64.decode64 env["HTTP_SIGNATURE"]
 
     pkey = OpenSSL::PKey::RSA.new(public_key)
